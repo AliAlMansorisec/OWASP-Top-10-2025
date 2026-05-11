@@ -94,20 +94,6 @@ Designed for:
 
 ---
 
-# ⚙️ Recommended Tools
-
-- Burp Suite Professional
-- ffuf
-- Nmap
-- nuclei
-- sqlmap
-- Interactsh
-- Retire.js
-- httpx
-- Katana
-- Wappalyzer
-
----
 
 # 🎯 Repository Goal
 
