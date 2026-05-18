@@ -32,3 +32,34 @@
 ### 3. حقن البيانات | DOM Injection
 
 - قم بصياغة رابط يحتوي على كود خبيث في الـ Fragment (بعد علامة #):
+```
+https://example.com/#<img src=x onerror=alert(1)>
+```
+
+- بما أن البيانات بعد `#` لا تُرسل للسيرفر، فإن الفلاتر التقليدية (WAF) لن تلاحظ الهجوم، وسيتم التنفيذ بالكامل داخل متصفح الضحية.
+
+### 4. تأكيد الاستغلال | Impact Verification
+
+- إذا نُفذ السكربت أو تم توجيه المستخدم لموقع خبيث بمجرد فتح الرابط = تم الاستغلال بنجاح.
+- تكمن قوة هذه الثغرة في أنها "صامتة" تماماً بالنسبة للسيرفر.
+
+---
+
+## 🔍 كيفية اكتشافها في منهجيتي | How to Find in My Methodology
+
+> 📂 **راجع ملف المنهجية التفصيلي:**  
+> [Web-Pentest-Methodology - Phase 3 - DOM-Based Testing](../../../web-pentest-methodology/Phase-3-Vulnerability-Testing/Step-??-DOM-Based-Testing.md)
+
+---
+
+## 🧪 مختبرات PortSwigger | PortSwigger Labs
+
+| المختبر | الصعوبة | الحل |
+|---------|--------|------|
+| DOM XSS in document.write sink | Apprentice | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/01-document-write.md) |
+| DOM XSS in innerHTML sink | Apprentice | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/02-innerhtml.md) |
+| DOM XSS in jQuery sink | Practitioner | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/03-jquery-sink.md) |
+| DOM XSS in AngularJS expression | Practitioner | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/04-angularjs.md) |
+| DOM XSS using web messages | Practitioner | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/05-web-messages.md) |
+| DOM XSS using web messages and JSON.parse | Practitioner | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/06-web-messages-json.md) |
+| DOM XSS via client-side prototype pollution | Practitioner | [الحل](../../../portswigger-labs/Client-Side/DOM-Based/07-prototype-pollution.md) |
