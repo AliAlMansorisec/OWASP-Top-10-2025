@@ -50,9 +50,12 @@
 ---
 ### 🔀 Sub-Vulnerabilities (ثغرات متفرعة ضمن هذا التصنيف)
 
-- **Prototype Pollution**: التلاعب بـ prototype في JavaScript لتنفيذ كود ضار.
-- **SSTI (Server-Side Template Injection)**: حقن كود في قوالب السيرفر مثل Jinja2 أو Twig.
-- **GraphQL Injection**: حقن أوامر ضارة في استعلامات GraphQL.
-- **Web LLM Attacks**: استغلال نماذج اللغة الكبيرة (LLM) في تطبيقات الويب.
-- **Email Injection**: إضافة حقول BCC أو CC لإرسال بريد لضحايا آخرين.
+| الثغرة | الملف | الشرح |
+|--------|-------|-------|
+| **Prototype Pollution** | [📄 04-Prototype-Pollution.md](./A03-Injection/04-Prototype-Pollution.md) | التلاعب بـ prototype في JavaScript لتنفيذ كود ضار |
+| **SSTI (Server-Side Template Injection)** | [📄 07-SSTI.md](./A03-Injection/07-SSTI.md) | حقن كود في قوالب السيرفر مثل Jinja2 أو Twig |
+| **DOM-Based XSS** | [📄 06-DOM-Based.md](./A03-Injection/06-DOM-Based.md) | ثغرات XSS تعتمد على معالجة DOM في المتصفح |
+| **GraphQL Injection** | [📄 10-GraphQL.md](./A03-Injection/10-GraphQL.md) | حقن أوامر ضارة في استعلامات GraphQL |
+| **Web LLM Attacks** | [📄 09-Web-LLM.md](./A03-Injection/09-Web-LLM.md) | استغلال نماذج اللغة الكبيرة (LLM) في تطبيقات الويب |
+
 
