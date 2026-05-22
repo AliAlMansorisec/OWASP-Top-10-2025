@@ -53,6 +53,8 @@
 ---
 ### 🔀 Sub-Vulnerabilities (ثغرات متفرعة ضمن هذا التصنيف)
 
-- **JWT Attacks (هجمات JWT)**: التلاعب بـ JSON Web Tokens لتجاوز المصادقة.
-- **WebSockets Attacks**: استغلال ثغرات في اتصالات WebSockets.
-- **OAuth Vulnerabilities**: استغلال ثغرات في بروتوكول OAuth.
+| الثغرة | الملف | الشرح |
+|--------|-------|-------|
+| **JWT Attacks** | [📄 02-JWT-Attacks.md](./A07-Auth-Failures/02-JWT-Attacks.md) | التلاعب بـ JSON Web Tokens لتجاوز المصادقة |
+| **WebSockets Attacks** | [📄 03-WebSockets.md](./A07-Auth-Failures/03-WebSockets.md) | استغلال ثغرات في اتصالات WebSockets |
+| **OAuth Vulnerabilities** | [📄 04-OAuth.md](./A07-Auth-Failures/04-OAuth.md) | استغلال ثغرات في بروتوكول OAuth |
