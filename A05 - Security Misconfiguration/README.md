@@ -49,13 +49,16 @@
 ---
 ### 🔀 Sub-Vulnerabilities (ثغرات متفرعة ضمن هذا التصنيف)
 
-- **Web Cache Deception**: خداع نظام التخزين المؤقت لعرض معلومات حساسة.
-- **Clickjacking**: خداع المستخدم للنقر على شيء غير ما يراه.
-- **HTTP Host Header Attack**: التلاعب برأس Host لخداع السيرفر.
-- **HTTP Request Smuggling**: تهريب طلبات HTTP لتجاوز الأمان.
-- **Information Disclosure**: كشف معلومات حساسة من السيرفر.
-- **File Upload Vulnerabilities**: رفع ملفات ضارة إلى السيرفر.
-- **CORS Misconfiguration**: إعدادات خاطئة لمشاركة الموارد عبر المواقع.
-- **Web Cache Poisoning**: تسميم التخزين المؤقت لعرض محتوى ضار.
+| الثغرة | الملف | الشرح |
+|--------|-------|-------|
+| **Web Cache Deception** | [📄 10-Cache-Deception.md](./A05-Security-Misconfiguration/10-Cache-Deception.md) | خداع نظام التخزين المؤقت لعرض معلومات حساسة |
+| **Clickjacking** | [📄 06-Clickjacking.md](./A05-Security-Misconfiguration/06-Clickjacking.md) | خداع المستخدم للنقر على شيء غير ما يراه |
+| **HTTP Host Header Attack** | [📄 08-Host-Header.md](./A05-Security-Misconfiguration/08-Host-Header.md) | التلاعب برأس Host لخداع السيرفر |
+| **HTTP Request Smuggling** | [📄 09-Request-Smuggling.md](./A05-Security-Misconfiguration/09-Request-Smuggling.md) | تهريب طلبات HTTP لتجاوز الأمان |
+| **Information Disclosure** | [📄 04-Info-Disclosure.md](./A05-Security-Misconfiguration/04-Info-Disclosure.md) | كشف معلومات حساسة من السيرفر |
+| **File Upload Vulnerabilities** | [📄 05-File-Upload.md](./A05-Security-Misconfiguration/05-File-Upload.md) | رفع ملفات ضارة إلى السيرفر |
+| **CORS Misconfiguration** | [📄 07-CORS.md](./A05-Security-Misconfiguration/07-CORS.md) | إعدادات خاطئة لمشاركة الموارد عبر المواقع |
+| **Web Cache Poisoning** | [📄 11-Cache-Poisoning.md](./A05-Security-Misconfiguration/11-Cache-Poisoning.md) | تسميم التخزين المؤقت لعرض محتوى ضار |
+
 
 
