@@ -24,39 +24,6 @@
 - **CSRF مع التحقق عبر Referer (معطل أو ضعيف)**: السيرفر يعتمد على رأس Referer لكن التحقق فيه ثغرة.
 ---
 
-## كيف تستغلها؟ (خطوات مفصلة) | How to Exploit?
-
-### 1. مرحلة الرصد | Enumeration
-
-- ابحث عن وظائف في الموقع تقوم بتغيير حالة الحساب (State-changing actions).
-- تأكد أن هذه الوظيفة تعتمد فقط على "الكوكيز" (Session Cookies) للتحقق من هوية المستخدم.
-- تأكد من عدم وجود وسيلة حماية مثل (CSRF Tokens) أو (SameSite Cookies: Strict).
-
-### 2. التحليل عبر Burp Suite | Analysis via Burp Suite
-
-- اعترض طلب تغيير البريد الإلكتروني مثلاً.
-- أرسله إلى Repeater.
-- ابحث في "رؤوس الطلب" (Headers) أو "جسم الطلب" (Body) عن أي توكن فريد (Unique Token). إذا كان الطلب يتكون من بارامترات عادية فقط، فالموقع غالباً مصاب.
-
-### 3. إنشاء صفحة الاستغلال | Exploit Generation
-
-- استخدم أداة CSRF PoC Generator في Burp Suite (موجودة في Engagement tools).
-- سيقوم Burp بإنشاء صفحة HTML تحتوي على نموذج (Form) مخفي يرسل الطلب تلقائياً عند فتح الصفحة:
-
-```html
-<form action="https://vulnerable-website.com/endpoint" method="POST">
-  <input type="hidden" name="email" value="hacker@evil.com">
-</form>
-<script>document.forms[0].submit();</script>
-```
-
-### 4. تأكيد الاستغلال | Impact Verification
-
-- قم برفع صفحة الـ HTML على سيرفرك الخاص.
-- اجعل الضحية (أو حسابك التجريبي الآخر) يفتح الرابط وهو مسجل دخول في الموقع المصاب.
-- إذا تغير البريد الإلكتروني الخاص بالضحية تلقائياً بمجرد فتح الرابط = تم الاستغلال بنجاح.
-
----
 ## 🛡️ How to Prevent (كيف تمنعها)
 
 - **استخدام CSRF Tokens فريدة لكل جلسة:** توكن عشوائي طويل يتم التحقق منه في كل طلب حساس.
