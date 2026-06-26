@@ -6,42 +6,43 @@
 
 ---
 
-## ما هي؟ | What is it?
+## 📌 Definition (التعريف)
 
-تحدث هذه الثغرات عندما يحتوي كود الـ JavaScript الخاص بالموقع على "مصدر" (Source) بيانات يمكن للمستخدم التحكم به (مثل الرابط `location.search`)، ويقوم بتمرير هذه البيانات إلى "مصب" (Sink) خطير (مثل وظيفة `eval()` أو `innerHTML`) بطريقة تسمح بتنفيذ كود خبيث.
+> ثغرات DOM-based تحدث عندما يتم التلاعب بـ Document Object Model (DOM) في متصفح الضحية عبر مدخلات غير موثوقة. على عكس الثغرات التقليدية التي تحدث في السيرفر، هذه الثغرات تحدث بالكامل في جانب العميل (Client-Side). الكود الخبيث يصل إلى "Source" (مصدر بيانات يتحكم فيه المهاجم، مثل URL Fragment) ويتدفق إلى "Sink" (دالة JavaScript خطيرة مثل `innerHTML` أو `eval`) دون فلترة، مما يسمح بتنفيذ JavaScript أو عمليات تلاعب أخرى.
 
 ---
 
-## كيف تستغلها؟ (خطوات مفصلة) | How to Exploit?
+## 🧩 أنواعها الرئيسية | Main Types
 
-### 1. مرحلة الرصد | Enumeration
+- **DOM XSS via innerHTML**: استخدام `innerHTML` مع مدخلات غير موثوقة لحقن HTML وJavaScript.
 
-- ابحث عن الأماكن التي يستخدم فيها الموقع الـ JavaScript لتعديل الصفحة دون تحديثها.
-- راقب المتغيرات التي تُؤخذ من الرابط (URL) وتُستخدم مباشرة في الكود، مثل:
-    - `window.location.hash` (#)
-    - `window.location.search` (?)
+- **DOM XSS via document.write**: استخدام `document.write` لكتابة مدخلات غير موثوقة مباشرة في الصفحة.
 
-### 2. التحليل عبر Burp Suite | Analysis via Burp Suite
+- **DOM XSS via jQuery sinks**: استغلال دوال jQuery مثل `html()` أو `append()` التي تقبل مدخلات غير موثوقة.
 
-- استخدم **DOM Invader** (أداة مدمجة في متصفح Burp) لاكتشاف الـ Sources والـ Sinks تلقائياً.
-- ابحث في ملفات الـ JS عن وظائف خطيرة مثل:
-    - لـ XSS: `.innerHTML`, `document.write()`
-    - لـ التوجيه: `window.location.href`
-    - لـ تنفيذ الأوامر: `eval()`, `setTimeout()`
+- **DOM XSS via AngularJS expressions**: استغلال تعبيرات AngularJS {{ }} لحقن وتنفيذ JavaScript.
 
-### 3. حقن البيانات | DOM Injection
+- **DOM XSS via Web Messages**: استغلال `postMessage` API مع مستمعين (Listeners) غير آمنين لاستقبال وتنفيذ بيانات خبيثة.
 
-- قم بصياغة رابط يحتوي على كود خبيث في الـ Fragment (بعد علامة #):
-```
-https://example.com/#<img src=x onerror=alert(1)>
-```
+- **DOM XSS via Web Messages + JSON.parse**: استغلال مستمعي Web Messages الذين يستخدمون `JSON.parse` دون التحقق من صحة البيانات.
 
-- بما أن البيانات بعد `#` لا تُرسل للسيرفر، فإن الفلاتر التقليدية (WAF) لن تلاحظ الهجوم، وسيتم التنفيذ بالكامل داخل متصفح الضحية.
+- **DOM XSS via Client-Side Prototype Pollution**: استغلال تلويث النموذج الأولي في JavaScript لتنفيذ XSS عبر DOM.
 
-### 4. تأكيد الاستغلال | Impact Verification
+---
 
-- إذا نُفذ السكربت أو تم توجيه المستخدم لموقع خبيث بمجرد فتح الرابط = تم الاستغلال بنجاح.
-- تكمن قوة هذه الثغرة في أنها "صامتة" تماماً بالنسبة للسيرفر.
+## 🛡️ How to Prevent (كيف تمنعها)
+
+- **تجنب الدوال الخطيرة:** لا تستخدم `innerHTML`، `document.write`، `eval`، `setTimeout(string)` مع مدخلات المستخدم.
+
+- **استخدام دوال آمنة:** استخدم `textContent` بدلاً من `innerHTML`، و `JSON.parse` بدلاً من `eval`.
+
+- **تعقيم المدخلات:** استخدم مكتبات مثل DOMPurify لتنظيف HTML قبل إدخاله في DOM.
+
+- **التحقق من Web Messages:** تحقق من `origin` في مستمعي `postMessage`، وصحة البيانات قبل استخدامها.
+
+- **استخدام CSP:** طبق Content-Security-Policy صارمة تمنع inline scripts وتحدد مصادر JavaScript المسموحة.
+
+- **تجنب Prototype Pollution:** جمد النموذج الأولي باستخدام `Object.freeze(Object.prototype)` أو تجنب عمليات الدمج غير الآمنة.
 
 ---
 
