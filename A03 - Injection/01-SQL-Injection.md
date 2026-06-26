@@ -6,42 +6,41 @@
 
 ---
 
-## ما هي؟ | What is it?
+## 📌 Definition (التعريف)
 
-تحدث هذه الثغرة عندما يتم إدخال بيانات المستخدم مباشرة في استعلامات قاعدة البيانات دون تنظيف (Sanitization). هذا يسمح للمهاجم بـ "حقن" أوامر SQL خاصة تجعل السيرفر ينفذ استعلامات لم يكن من المفترض تنفيذها، مثل عرض بيانات سرية أو تعديل قاعدة البيانات.
+> ثغرة SQL Injection تحدث عندما يقوم التطبيق بتمرير مدخلات المستخدم مباشرة إلى استعلامات قاعدة البيانات دون فلترة. المهاجم يستطيع حقن أوامر SQL خبيثة تغير من سلوك الاستعلام الأصلي، مما يسمح له بتجاوز تسجيل الدخول، قراءة بيانات حساسة من قاعدة البيانات، تعديلها، أو حتى حذفها. هذه الثغرة من أقدم الثغرات وأكثرها تأثيراً، ولا تزال مسؤولة عن العديد من اختراقات البيانات الكبيرة حتى اليوم.
 
 ---
 
-## كيف تستغلها؟ (خطوات مفصلة) | How to Exploit?
+## 🧩 أنواعها الرئيسية | Main Types
 
-### 1. مرحلة الرصد | Discovery
+- **حقن مباشر (In-Band SQLi)**: تظهر نتائج الاستعلام مباشرة في الصفحة.
+  - **Union-Based**: استخدام `UNION SELECT` لدمج نتائج استعلامات إضافية من جداول أخرى.
+  - **Error-Based**: إجبار السيرفر على إظهار أخطاء تحتوي على بيانات قاعدة البيانات.
 
-- ابحث عن أي بارامتر في الرابط أو في الـ POST Data يتفاعل مع قاعدة البيانات (مثل: id=1, search=apple, category=shoes).
-- جرب وضع علامة الاقتباس الفردية `'` أو المزدوجة `"` بعد القيمة. إذا ظهر خطأ في الصفحة (Database Error)، فهذا مؤشر قوي على وجود الثغرة.
+- **حقن أعمى (Blind SQLi)**: لا تظهر نتائج أو أخطاء مباشرة.
+  - **Boolean-Based**: طرح أسئلة بنعم/لا على السيرفر ومراقبة الاختلاف في الاستجابة.
+  - **Time-Based**: استخدام `SLEEP()` أو `WAITFOR DELAY` وجعل السيرفر يتأخر إذا تحقق شرط معين.
 
-### 2. أنواع الحقن | Attack Vectors
+- **حقن خارج النطاق (Out-of-Band SQLi)**: إجبار السيرفر على الاتصال بخادم خارجي لنقل البيانات.
 
-#### In-band (Classic) | الحقن المباشر
-تظهر النتائج مباشرة في الصفحة.
+- **تجاوز تسجيل الدخول (Authentication Bypass)**: استخدام `' OR 1=1 --` لتجاوز صفحة تسجيل الدخول.
 
-- **Union-Based:** استخدام أمر `UNION SELECT` لدمج نتائج من جداول أخرى وعرضها.
-- **Error-Based:** إجبار السيرفر على إظهار الخطأ الذي يحتوي على المعلومات المطلوبة (مثل اسم قاعدة البيانات).
+---
 
-#### Blind SQLi | الحقن الأعمى (الأكثر شيوعاً حالياً)
-لا يظهر أي خطأ أو بيانات في الصفحة، وتعتمد على ملاحظة التغيير في سلوك الموقع:
+## 🛡️ How to Prevent (كيف تمنعها)
 
-- **Boolean-based:** تسأل السيرفر سؤالاً (صح/خطأ). إذا كانت الإجابة صحيحة تظهر الصفحة بشكل معين، وإذا خاطئة تظهر بشكل آخر.
-- **Time-based:** تطلب من السيرفر التأخر في الرد (مثلاً `SLEEP(10)`) إذا تحقق شرط معين. إذا تأخر السيرفر، فأنت تعلم أن الشرط تحقق.
+- **استخدام Prepared Statements (Parameterized Queries):** الطريقة الأكثر أماناً. استخدم `?` أو `$1` بدلاً من دمج النصوص مباشرة.
 
-### 3. الاستغلال المتقدم | Advanced Exploitation
+- **إجراءات مخزنة آمنة (Stored Procedures):** استخدمها مع Parameterization وليس مع دمج النصوص.
 
-- استخراج أسماء الجداول (`Information_schema.tables`)
-- استخراج أسماء الأعمدة (`Information_schema.columns`)
-- سحب البيانات (أسماء المستخدمين، كلمات المرور المشفرة)
+- **التحقق من المدخلات (Input Validation):** استخدم القائمة البيضاء (Whitelist) للتحقق من نوع البيانات (أرقام، نصوص، إلخ).
 
-### 4. تأكيد الاستغلال | Impact Verification
+- **الهروب من المدخلات (Input Escaping):** اهرب الرموز الخاصة بكل قاعدة بيانات (لكن هذه ليست الحماية الأساسية).
 
-- الحصول على نسخة من قاعدة البيانات أو تجاوز صفحة تسجيل الدخول باستخدام `' OR 1=1 --` = تم الاستغلال بنجاح.
+- **استخدام أقل الصلاحيات (Least Privilege):** حساب قاعدة البيانات الذي يتصل به التطبيق يجب أن يملك فقط الصلاحيات التي يحتاجها.
+
+- **تحديث وتصحيح قاعدة البيانات:** استخدم أحدث إصدارات قواعد البيانات مع التصحيحات الأمنية.
 
 ---
 
@@ -56,9 +55,21 @@
 
 | المختبر | الصعوبة | الحل |
 |---------|--------|------|
-| SQL injection vulnerability in WHERE clause | Apprentice | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/01-where-clause.md) |
-| Blind SQL injection with conditional responses | Apprentice | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/02-blind-conditional.md) |
-| SQL injection with UNION attack | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/03-union-attack.md) |
-| Blind SQL injection with time delays | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/04-blind-time-delays.md) |
-| SQL injection with filter bypass via XML encoding | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/05-filter-bypass-xml.md) |
-| Second-order SQL injection | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/06-second-order.md) |
+| SQL injection UNION attack, determining the number of columns | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/01-union-columns.md) |
+| SQL injection UNION attack, finding a column containing text | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/02-union-text.md) |
+| SQL injection UNION attack, retrieving data from other tables | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/03-union-retrieve.md) |
+| SQL injection UNION attack, retrieving multiple values | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/04-union-multiple.md) |
+| SQL injection attack, querying the database type and version | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/05-version.md) |
+| SQL injection attack, listing the database contents | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/06-list-contents.md) |
+| Blind SQL injection with conditional responses | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/07-blind-conditional.md) |
+| Blind SQL injection with conditional errors | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/08-blind-errors.md) |
+| Blind SQL injection with time delays | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/09-blind-time.md) |
+| Blind SQL injection with time delays and information retrieval | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/10-blind-time-info.md) |
+| Blind SQL injection with out-of-band interaction | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/11-blind-oast.md) |
+| Blind SQL injection with out-of-band data exfiltration | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/12-blind-oast-exfil.md) |
+| SQL injection with filter bypass via XML encoding | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/13-xml-encoding.md) |
+| Visible error-based SQL injection | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/14-visible-error.md) |
+| SQL injection with filter bypass via SQL comment sequence | Practitioner | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/15-comment-bypass.md) |
+| SQL injection with filter bypass via trigger creation | Expert | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/16-trigger-bypass.md) |
+| SQL injection with filter bypass via substring injection | Expert | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/17-substring-bypass.md) |
+| SQL injection with filter bypass via Hex encoding | Expert | [الحل](../../../portswigger-labs/Server-Side/SQL-Injection/18-hex-bypass.md) |
